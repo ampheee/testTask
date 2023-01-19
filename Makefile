@@ -1,15 +1,22 @@
+name=dateComparer
 complier=go	build
-runnerPath=build/webPageComparer
-bin=webPageComparer
 buildPath=build/
-
+appPath=app/
+app=main.go
 all: run build
 
 run: build
-	./$(runnerPath)
+	./$(buildPath)$(name)
 	xdg-open "http://localhost:8080/when/"
 
 build: 
 	mkdir build
-	$(complier) .
-	mv $(bin) $(buildPath)
+	$(complier) $(appPath)$(app)
+	mv main $(name) && mv $(name) $(buildPath)
+
+rebuild: clean build
+rerun: clean run
+
+clean:
+	rm -rf $(buildPath) main
+

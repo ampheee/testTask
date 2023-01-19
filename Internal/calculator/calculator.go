@@ -1,13 +1,12 @@
-package main
+package calculator
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
+	"math"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -16,22 +15,7 @@ const (
 	WARNING = "WARNING! "
 )
 
-func main() {
-	r := gin.Default()
-	r.GET("/when/:year", func(ctx *gin.Context) {
-		defer ctx.Request.Body.Close()
-		year, err := getYear(ctx)
-		var ans = []byte("")
-		if err == nil {
-			obtainedDateTime := FormateDate(year)
-			ans = []byte(strconv.Itoa(calculateSince(obtainedDateTime)))
-		}
-		ctx.Data(http.StatusOK, "", ans)
-	})
-	r.Run(":8080")
-}
-
-func getYear(ctx *gin.Context) (string, error) {
+func GetYear(ctx *gin.Context) (string, error) {
 	year := ctx.Param("year")
 	_, err := strconv.ParseInt(year, 10, 0)
 	if err != nil {
@@ -40,9 +24,9 @@ func getYear(ctx *gin.Context) (string, error) {
 	return year, err
 }
 
-func calculateSince(obtainedDateTime time.Time) int {
+func Since(obtainedDateTime time.Time) int {
 	days := time.Now().Sub(obtainedDateTime)
-	return int(days.Hours() / 24)
+	return int(math.Abs(days.Hours() / 24))
 }
 
 func FormateDate(year string) time.Time {
